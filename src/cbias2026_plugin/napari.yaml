@@ -57,20 +57,28 @@ contributions:
     - command: cbias2026-plugin.make_sample_data
       display_name: CBIAS2026 Demo Plugin
       key: unique_id.1
+  # threshold widgets open as tabs beside each other, so the five styles
+  # can be compared side by side; the workflow widget stacks on the left
   widgets:
     - command: cbias2026-plugin.make_function_widget
       autogenerate: true
       display_name: Threshold (autogenerate)
+      tabify: true
     - command: cbias2026-plugin.make_factory_widget
       display_name: Threshold (magic_factory)
+      tabify: true
     - command: cbias2026-plugin.make_live_widget
       display_name: Threshold (magic_factory, live)
+      tabify: true
     - command: cbias2026-plugin.make_container_widget
       display_name: Threshold (Container)
+      tabify: true
     - command: cbias2026-plugin.make_qwidget
       display_name: Threshold (QWidget)
+      tabify: true
     - command: cbias2026-plugin.make_workflow_widget
       display_name: Example Workflow Widget
+      default_dock_area: left
   menus:
     napari/layers/segment:
       - submenu: cbias2026-plugin.demo_menu

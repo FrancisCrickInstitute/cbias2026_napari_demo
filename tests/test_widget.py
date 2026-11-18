@@ -128,3 +128,28 @@ def test_qwidget_button_without_images_does_nothing(viewer):
     widget.btn.click()
 
     assert len(viewer.layers) == 0
+
+
+def test_threshold_widgets_open_as_tabs(viewer):
+    window = viewer.window._qt_window
+    first, _ = viewer.window.add_plugin_dock_widget(
+        PLUGIN, 'Threshold (Container)'
+    )
+    second, _ = viewer.window.add_plugin_dock_widget(
+        PLUGIN, 'Threshold (QWidget)'
+    )
+
+    assert second in window.tabifiedDockWidgets(first)
+
+
+def test_workflow_widget_docks_left_without_tabbing(viewer):
+    from qtpy.QtCore import Qt
+
+    window = viewer.window._qt_window
+    dock, _ = viewer.window.add_plugin_dock_widget(
+        PLUGIN, 'Example Workflow Widget'
+    )
+
+    assert window.dockWidgetArea(dock) == Qt.DockWidgetArea.LeftDockWidgetArea
+    # napari's layer list is already on the left; this stacks below it
+    assert window.tabifiedDockWidgets(dock) == []
