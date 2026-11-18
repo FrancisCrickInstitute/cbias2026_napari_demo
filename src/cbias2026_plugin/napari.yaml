@@ -9,12 +9,12 @@ contributions:
     - id: cbias2026-plugin.get_reader
       python_name: cbias2026_plugin._reader:napari_get_reader
       title: Open data with CBIAS2026 Demo Plugin
-    - id: cbias2026-plugin.write_multiple
-      python_name: cbias2026_plugin._writer:write_multiple
-      title: Save multi-layer data with CBIAS2026 Demo Plugin
     - id: cbias2026-plugin.write_single_image
       python_name: cbias2026_plugin._writer:write_single_image
       title: Save image data with CBIAS2026 Demo Plugin
+    - id: cbias2026-plugin.write_labels_features
+      python_name: cbias2026_plugin._writer:write_labels_features
+      title: Save object measurements with CBIAS2026 Demo Plugin
     - id: cbias2026-plugin.make_sample_data
       python_name: cbias2026_plugin._sample_data:make_sample_data
       title: Load sample data from CBIAS2026 Demo Plugin
@@ -46,12 +46,13 @@ contributions:
       accepts_directories: false
       filename_patterns: ['*.npy']
   writers:
-    - command: cbias2026-plugin.write_multiple
-      layer_types: ['image*','labels*']
-      filename_extensions: []
     - command: cbias2026-plugin.write_single_image
       layer_types: ['image']
       filename_extensions: ['.npy']
+    - command: cbias2026-plugin.write_labels_features
+      display_name: Object measurements
+      layer_types: ['labels']
+      filename_extensions: ['.csv']
   sample_data:
     - command: cbias2026-plugin.make_sample_data
       display_name: CBIAS2026 Demo Plugin

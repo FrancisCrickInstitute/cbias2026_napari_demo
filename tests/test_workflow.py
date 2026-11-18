@@ -98,3 +98,19 @@ def test_rerun_ignores_labels_layers(widget, viewer, qtbot):
 
     assert len(workers) == 1
     assert len(labels_layers(viewer)) == 2
+
+
+def test_measurements_shown_on_hover(widget, viewer, qtbot):
+    viewer.add_image(multichannel((2,)), name='img1')
+    widget.run_analysis()
+    qtbot.waitUntil(lambda: len(viewer.layers) == 2, timeout=WAIT_MS)
+    labels = viewer.layers['img1_labels_ch0']
+
+    # centre of the second blob. Without an 'index' feature column napari
+    # would show "[No Properties]" here, or label 1's row for the first blob.
+    status = labels.get_status((35, 62), world=True)['coordinates']
+
+    assert status.startswith('[35, 62]: 2;')
+    assert 'label: 2, area: ' in status
+    assert 'eccentricity: ' in status
+    assert status.endswith('Image: img1')

@@ -119,10 +119,15 @@ class ExampleWorkflowWidget(QWidget):
         ]
 
     def _add_results(self, result: dict):
-        self._results.append(result['props'])
+        props = result['props']
+        self._results.append(props)
         self.viewer.add_labels(
             result['labels'],
             name=f'{result["layer_name"]}_labels_ch{result["channel"]}',
+            # napari shows a Labels layer's features for the object under the
+            # cursor. Without an 'index' column it matches row i to label i,
+            # but regionprops rows start at label 1.
+            features=props.assign(index=props['label']),
         )
         # Workers finish in any order, so redraw the table from everything
         # collected so far rather than appending fragments
