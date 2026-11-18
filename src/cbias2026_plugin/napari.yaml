@@ -86,3 +86,26 @@ contributions:
   submenus:
     - id: cbias2026-plugin.demo_menu
       label: CBIAS demo
+  configurations:
+    segmentation:
+      title: Segmentation
+      properties:
+        sigma:
+          title: Gaussian smoothing sigma (pixels)
+          type: float
+          default: 5.0
+          minimum: 0.5
+          maximum: 50.0
+          description: Larger values merge nearby objects and smooth edges.
+        threshold_method:
+          title: Threshold method
+          type: string
+          default: otsu
+          enum: [otsu, li, triangle]
+          description: scikit-image method used to pick the threshold.
+        min_area:
+          title: Minimum object area (pixels)
+          type: integer
+          default: 0
+          minimum: 0
+          description: Objects smaller than this are removed.

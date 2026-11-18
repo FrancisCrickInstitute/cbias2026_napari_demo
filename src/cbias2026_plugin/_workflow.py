@@ -16,9 +16,11 @@ import pandas as pd
 import skimage.io
 from napari.layers import Image
 from napari.qt.threading import thread_worker
+from napari.settings import get_plugin_settings
 from qtpy import QtGui
 from qtpy.QtWidgets import (
     QFileDialog,
+    QLabel,
     QPushButton,
     QSpinBox,
     QTextBrowser,
@@ -27,7 +29,7 @@ from qtpy.QtWidgets import (
 )
 from skimage import measure
 
-from ._segment import segment_channel
+from ._segment import PLUGIN_NAME, segment_channel, segmentation_settings
 
 if TYPE_CHECKING:
     import napari
@@ -54,6 +56,15 @@ class ExampleWorkflowWidget(QWidget):
         self.channel_idx.setPrefix('Channel index: ')
         self.channel_idx.setValue(0)
 
+        # Parameters live in Preferences > CBIAS2026 Demo Plugin, shared with
+        # the Segment image menu command. Listening for changes keeps this
+        # label current even when they're edited while the widget is open.
+        self.settings_label = QLabel()
+        get_plugin_settings(PLUGIN_NAME).events.changed.connect(
+            self._show_settings
+        )
+        self._show_settings()
+
         self.run_btn = QPushButton('Run analysis')
         self.run_btn.clicked.connect(self.run_analysis)
 
@@ -63,8 +74,16 @@ class ExampleWorkflowWidget(QWidget):
         self.setLayout(QVBoxLayout())
         self.layout().addWidget(self.dir_btn)
         self.layout().addWidget(self.channel_idx)
+        self.layout().addWidget(self.settings_label)
         self.layout().addWidget(self.run_btn)
         self.layout().addWidget(self.output_box)
+
+    def _show_settings(self, event=None):
+        params = segmentation_settings()
+        self.settings_label.setText(
+            f'sigma {params["sigma"]:g}, {params["threshold_method"]} '
+            f'threshold, min area {params["min_area"]} px'
+        )
 
     def select_images(self):
         result = QFileDialog.getExistingDirectory(
@@ -99,11 +118,12 @@ class ExampleWorkflowWidget(QWidget):
         self.output_box.clear()
         self._results = []
         channel = self.channel_idx.value()
+        params = segmentation_settings()
 
         @thread_worker(connect={'returned': self._add_results})
-        def analysis_worker(img, name, channel):
+        def analysis_worker(img, name, channel, params):
             img_channel = img[channel, ...]
-            labels = segment_channel(img_channel)
+            labels = segment_channel(img_channel, **params)
             props = measure_objects(labels, img_channel)
             props['Image'] = name
             return {
@@ -114,7 +134,7 @@ class ExampleWorkflowWidget(QWidget):
             }
 
         return [
-            analysis_worker(layer.data, layer.name, channel)
+            analysis_worker(layer.data, layer.name, channel, params)
             for layer in image_layers
         ]
 
