@@ -36,6 +36,11 @@ contributions:
     - id: cbias2026-plugin.make_workflow_widget
       python_name: cbias2026_plugin._workflow:ExampleWorkflowWidget
       title: Make example workflow widget
+    - id: cbias2026-plugin.segment_image
+      python_name: cbias2026_plugin._segment:segment_image
+      title: Segment image (Gaussian + Otsu)
+      # greys out the menu entry unless an Image layer is selected
+      enablement: active_layer_type == 'image'
   readers:
     - command: cbias2026-plugin.get_reader
       accepts_directories: false
@@ -65,3 +70,18 @@ contributions:
       display_name: Threshold (QWidget)
     - command: cbias2026-plugin.make_workflow_widget
       display_name: Example Workflow Widget
+  menus:
+    napari/layers/segment:
+      - submenu: cbias2026-plugin.demo_menu
+    cbias2026-plugin.demo_menu:
+      - command: cbias2026-plugin.segment_image
+      - command: cbias2026-plugin.make_function_widget
+      - command: cbias2026-plugin.make_factory_widget
+      - command: cbias2026-plugin.make_live_widget
+      - command: cbias2026-plugin.make_container_widget
+      - command: cbias2026-plugin.make_qwidget
+    napari/layers/measure:
+      - command: cbias2026-plugin.make_workflow_widget
+  submenus:
+    - id: cbias2026-plugin.demo_menu
+      label: CBIAS demo

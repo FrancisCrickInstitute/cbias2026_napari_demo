@@ -25,18 +25,14 @@ from qtpy.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from skimage import filters, measure
+from skimage import measure
+
+from ._segment import segment_channel
 
 if TYPE_CHECKING:
     import napari
 
 MEASURED_PROPERTIES = ('label', 'area', 'eccentricity')
-
-
-def segment_channel(img: np.ndarray, sigma: float = 5) -> np.ndarray:
-    smoothed = filters.gaussian(img, sigma=sigma)
-    mask = smoothed >= filters.threshold_otsu(smoothed)
-    return measure.label(mask)
 
 
 def measure_objects(labels: np.ndarray, img: np.ndarray) -> pd.DataFrame:

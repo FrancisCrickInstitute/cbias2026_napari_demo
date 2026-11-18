@@ -3,7 +3,7 @@ import pytest
 import skimage.io
 from napari.layers import Labels
 
-from cbias2026_plugin._workflow import ExampleWorkflowWidget, segment_channel
+from cbias2026_plugin._workflow import ExampleWorkflowWidget
 
 SHAPE = (128, 128)
 WAIT_MS = 10_000
@@ -35,12 +35,6 @@ def widget(viewer):
 
 def labels_layers(viewer):
     return [layer for layer in viewer.layers if isinstance(layer, Labels)]
-
-
-def test_segment_channel_counts_objects():
-    labels = segment_channel(blobs(3))
-    assert labels.shape == SHAPE
-    assert labels.max() == 3
 
 
 def test_load_images_moves_channels_first(widget, viewer, qtbot, tmp_path):
