@@ -1,0 +1,18 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: v2.3.0
+_src_path: gh:napari/napari-plugin-template
+display_name: CBIAS2026 Demo Plugin
+email: cameron.shand@crick.ac.uk
+full_name: Cameron Shand
+github_repository_url: provide later
+github_username_or_organization: FrancisCrickInstitute
+include_reader_plugin: true
+include_sample_data_plugin: true
+include_widget_plugin: true
+include_writer_plugin: true
+install_dependabot: true
+install_precommit: true
+license: MIT
+module_name: cbias2026_plugin
+plugin_name: cbias2026-plugin
+short_description: Demo plugin for the CBIAS 2026 napari workshop
