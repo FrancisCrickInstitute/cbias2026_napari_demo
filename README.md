@@ -26,10 +26,14 @@ The widgets are under **Plugins > CBIAS2026 Demo Plugin** and also in the
 - **Settings.** The segmentation parameters are in **Preferences > CBIAS2026
   Demo Plugin** (`configurations` in the manifest). The menu command and the
   workflow widget both use them.
-- **Readers, writers and sample data.** **File > Save Selected Layers** saves
-  a labels layer's measurements as `.csv`, or an image as `.npy`. The reader
-  opens integer `.npy` files, and **File > Open Sample** has the template's
-  example data.
+- **Sample data.** **File > Open Sample > CBIAS2026 Demo Plugin** has mitotic
+  nuclei, a `cells3d` max projection laid out for the workflow widget, and
+  synthetic nuclei with ground-truth labels (`_sample_data.py`). The first
+  two are downloaded by scikit-image the first time they're opened, so open
+  them once beforehand if the session has no internet.
+- **Readers and writers.** **File > Save Selected Layers** saves a labels
+  layer's measurements as `.csv`, or an image as `.npy`. The reader opens
+  integer `.npy` files.
 
 The manifest that wires all of this into napari is
 `src/cbias2026_plugin/napari.yaml`.
