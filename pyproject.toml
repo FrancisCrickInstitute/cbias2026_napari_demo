@@ -46,7 +46,7 @@ all = [
     # Qt 6.12 hides magicgui's slider value readout (the text box collapses
     # to 1 px). Remove once https://github.com/pyapp-kit/magicgui/pull/751
     # is released.
-    "PyQt6<6.12",
+    "PyQt6<6.13",
 ]
 
 [dependency-groups]
@@ -57,7 +57,7 @@ dev = [
     "prek",  # fast drop-in replacement for pre-commit
     "pytest-qt",  # https://pytest-qt.readthedocs.io/en/latest/
     "napari[qt]",  # test with napari's default Qt bindings
-    "PyQt6<6.12",  # see the note on the `all` extra
+    "PyQt6<6.13",  # see the note on the `all` extra
 ]
 
 [project.entry-points."napari.manifest"]
