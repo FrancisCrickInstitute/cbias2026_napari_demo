@@ -27,9 +27,11 @@ def labels_layers(viewer):
 def test_threshold_image_above_and_below():
     above = threshold_image(RAMP, 0.5)
     below = threshold_image(RAMP, 0.5, keep_below=True)
-    # pixels equal to the threshold are in neither
-    assert above[0].tolist() == [False, False, False, True, True]
+    # pixels equal to the threshold count as above, so the two modes split
+    # the image between them with no pixel lost or counted twice
+    assert above[0].tolist() == [False, False, True, True, True]
     assert below[0].tolist() == [True, True, False, False, False]
+    np.testing.assert_array_equal(above, ~below)
 
 
 def test_threshold_image_rescales_integer_images():
@@ -53,6 +55,29 @@ def test_manifest_widgets_open_in_napari(viewer, display_name):
     assert dock_widget is not None
 
 
+@pytest.mark.parametrize(
+    ('display_name', 'slider_attr'),
+    [
+        ('Threshold (magic_factory)', 'threshold'),
+        ('Threshold (magic_factory, live)', 'threshold'),
+        ('Threshold (Container)', '_threshold_slider'),
+    ],
+)
+def test_slider_value_readout_is_visible(
+    make_napari_viewer, qtbot, display_name, slider_attr
+):
+    from qtpy.QtWidgets import QAbstractSpinBox
+
+    viewer = make_napari_viewer(show=True)
+    _, widget = viewer.window.add_plugin_dock_widget(PLUGIN, display_name)
+    readout = getattr(widget, slider_attr).native.findChild(QAbstractSpinBox)
+
+    # Qt 6.12 collapses the readout's text box to 1 px (pinned below it in
+    # pyproject.toml until magicgui#751 is released)
+    qtbot.waitUntil(lambda: readout.lineEdit().width() > 20)
+    assert readout.text() == '0.50'
+
+
 def test_autogenerate_function_returns_mask():
     assert threshold_autogenerate_widget(RAMP, 0.5).shape == RAMP.shape
 
@@ -63,7 +88,7 @@ def test_factory_widget_called_directly(viewer):
 
     mask = widget(layer, 0.5)
 
-    assert mask.sum() == 2 * RAMP.shape[0]
+    assert mask.sum() == 3 * RAMP.shape[0]
 
 
 def test_live_widget_reuses_output_layer(viewer):

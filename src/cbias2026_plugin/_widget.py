@@ -36,6 +36,8 @@ from qtpy.QtWidgets import (
 )
 from skimage.util import img_as_float
 
+from ._layers import show_labels
+
 if TYPE_CHECKING:
     import napari
 
@@ -51,32 +53,27 @@ def threshold_image(
     `keep_below` flag determines direction of threshold
     """
     img = img_as_float(img)
-    return img < threshold if keep_below else img > threshold
-
-
-def show_labels(viewer: 'napari.viewer.Viewer', data: np.ndarray, name: str):
-    """Update the layer in place if it exists, so repeated runs don't pile up
-    layers."""
-    if name in viewer.layers:
-        viewer.layers[name].data = data
-    else:
-        viewer.add_labels(data, name=name)
+    return img < threshold if keep_below else img >= threshold
 
 
 def threshold_autogenerate_widget(
-    img: 'napari.types.ImageData', threshold: float = 0.5
+    img: 'napari.types.ImageData',
+    threshold: float = 0.5,
+    keep_below: bool = False,
 ) -> 'napari.types.LabelsData':
-    return threshold_image(img, threshold)
+    return threshold_image(img, threshold, keep_below)
 
 
 @magic_factory(
-    threshold={'widget_type': 'FloatSlider', 'max': 1},
+    threshold={'widget_type': 'FloatSlider', 'max': 1, 'readout': True},
     call_button='Threshold',
 )
 def threshold_factory_widget(
-    img_layer: 'napari.layers.Image', threshold: float = 0.5
+    img_layer: 'napari.layers.Image',
+    threshold: float = 0.5,
+    keep_below: bool = False,
 ) -> 'napari.types.LabelsData':
-    return threshold_image(img_layer.data, threshold)
+    return threshold_image(img_layer.data, threshold, keep_below)
 
 
 # With auto_call=True there is no button: the function re-runs on every
@@ -86,9 +83,11 @@ def threshold_factory_widget(
     threshold={'widget_type': 'FloatSlider', 'max': 1}, auto_call=True
 )
 def threshold_live_widget(
-    img_layer: 'napari.layers.Image', threshold: float = 0.5
+    img_layer: 'napari.layers.Image',
+    threshold: float = 0.5,
+    keep_below: bool = False,
 ) -> 'napari.types.LabelsData':
-    return threshold_image(img_layer.data, threshold)
+    return threshold_image(img_layer.data, threshold, keep_below)
 
 
 class ImageThreshold(Container):

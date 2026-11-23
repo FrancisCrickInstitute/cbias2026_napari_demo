@@ -29,6 +29,7 @@ from qtpy.QtWidgets import (
 )
 from skimage import measure
 
+from ._layers import place_above, show_labels
 from ._segment import PLUGIN_NAME, segment_channel, segmentation_settings
 
 if TYPE_CHECKING:
@@ -145,14 +146,17 @@ class ExampleWorkflowWidget(QWidget):
     def _add_results(self, result: dict):
         props = result['props']
         self._results.append(props)
-        self.viewer.add_labels(
+        labels = show_labels(
+            self.viewer,
             result['labels'],
-            name=f'{result["layer_name"]}_labels_ch{result["channel"]}',
+            f'{result["layer_name"]}_labels_ch{result["channel"]}',
             # napari shows a Labels layer's features for the object under the
             # cursor. Without an 'index' column it matches row i to label i,
             # but regionprops rows start at label 1.
             features=props.assign(index=props['label']),
         )
+        # Ensure that the labels layers sit next to image layer for easy viewing
+        place_above(self.viewer, labels, result['layer_name'])
         # Workers finish in any order, so redraw the table from everything
         # collected so far rather than appending fragments
         self.output_box.setPlainText(

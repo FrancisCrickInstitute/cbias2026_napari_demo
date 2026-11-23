@@ -88,16 +88,39 @@ def test_run_analysis_table_has_every_object(widget, viewer, qtbot):
     assert table.count('img2') == 2
 
 
-def test_rerun_ignores_labels_layers(widget, viewer, qtbot):
-    viewer.add_image(multichannel((1,)), name='img1')
+def test_labels_layer_sits_above_its_image(widget, viewer, qtbot):
+    for name in ('img1', 'img2', 'img3'):
+        viewer.add_image(multichannel((1,)), name=name)
+
+    widget.run_analysis()
+    qtbot.waitUntil(lambda: len(viewer.layers) == 6, timeout=WAIT_MS)
+
+    assert [layer.name for layer in viewer.layers] == [
+        'img1',
+        'img1_labels_ch0',
+        'img2',
+        'img2_labels_ch0',
+        'img3',
+        'img3_labels_ch0',
+    ]
+
+
+def test_rerun_updates_labels_layer_in_place(widget, viewer, qtbot):
+    image = viewer.add_image(multichannel((1,)), name='img1')
     widget.run_analysis()
     qtbot.waitUntil(lambda: len(viewer.layers) == 2, timeout=WAIT_MS)
+    labels = viewer.layers['img1_labels_ch0']
 
+    image.data = multichannel((2,))
     workers = widget.run_analysis()
-    qtbot.waitUntil(lambda: len(viewer.layers) == 3, timeout=WAIT_MS)
+    with qtbot.waitSignal(workers[0].finished, timeout=WAIT_MS):
+        pass
 
+    # the earlier labels layer isn't analysed as an image
     assert len(workers) == 1
-    assert len(labels_layers(viewer)) == 2
+    assert labels_layers(viewer) == [labels]
+    assert labels.data.max() == 2
+    assert labels.features['label'].tolist() == [1, 2]
 
 
 def test_measurements_shown_on_hover(widget, viewer, qtbot):
