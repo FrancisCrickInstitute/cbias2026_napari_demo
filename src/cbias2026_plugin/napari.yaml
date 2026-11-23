@@ -18,9 +18,9 @@ contributions:
     - id: cbias2026-plugin.sample_mitotic_nuclei
       python_name: cbias2026_plugin._sample_data:mitotic_nuclei
       title: Load mitotic nuclei sample
-    - id: cbias2026-plugin.sample_cells3d_projection
-      python_name: cbias2026_plugin._sample_data:cells3d_projection
-      title: Load cells3d max projection sample
+    - id: cbias2026-plugin.sample_cells3d_slice
+      python_name: cbias2026_plugin._sample_data:cells3d_slice
+      title: Load cells3d middle slice sample
     - id: cbias2026-plugin.sample_synthetic_nuclei
       python_name: cbias2026_plugin._sample_data:synthetic_nuclei
       title: Generate synthetic nuclei sample
@@ -63,9 +63,9 @@ contributions:
     - command: cbias2026-plugin.sample_mitotic_nuclei
       display_name: Mitotic nuclei (2D)
       key: mitotic_nuclei
-    - command: cbias2026-plugin.sample_cells3d_projection
-      display_name: Cells 3D, max projection (for the workflow widget)
-      key: cells3d_projection
+    - command: cbias2026-plugin.sample_cells3d_slice
+      display_name: Cells 3D, middle slice (for the workflow widget)
+      key: cells3d_slice
     - command: cbias2026-plugin.sample_synthetic_nuclei
       display_name: Synthetic nuclei with ground truth
       key: synthetic_nuclei

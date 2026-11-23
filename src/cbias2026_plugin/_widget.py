@@ -1,6 +1,6 @@
 """
-The same thresholding operation exposed through each way napari lets a
-plugin build a widget, from least to most code:
+The same thresholding operation/function exposed through each way napari
+lets a plugin build a widget, from least to most code:
 
 - a plain function flagged with `autogenerate: true` in the manifest.
     napari wraps it with magicgui, which builds the GUI from the type
@@ -43,10 +43,12 @@ if TYPE_CHECKING:
 def threshold_image(
     img: np.ndarray, threshold: float, keep_below: bool = False
 ) -> np.ndarray:
-    """Shared by every widget below, so only the widget plumbing differs.
+    """Shared func for every widget
 
     `img_as_float` rescales integer images to [0, 1], so one 0-1 threshold
     range works whatever the image's dtype.
+
+    `keep_below` flag determines direction of threshold
     """
     img = img_as_float(img)
     return img < threshold if keep_below else img > threshold
@@ -158,8 +160,8 @@ class ThresholdQWidget(QWidget):
         layout.addRow(self.btn)
         self.setLayout(layout)
 
-        # magicgui's layer dropdowns do this for us. napari drops these
-        # connections itself if the widget is deleted.
+        # magicgui's layer dropdowns auto-refresh dropdowns based on available layers
+        # We need to do it ourselves here
         self.viewer.layers.events.inserted.connect(self._refresh_layers)
         self.viewer.layers.events.removed.connect(self._refresh_layers)
         self._refresh_layers()

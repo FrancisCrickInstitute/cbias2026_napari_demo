@@ -34,6 +34,8 @@ from ._segment import PLUGIN_NAME, segment_channel, segmentation_settings
 if TYPE_CHECKING:
     import napari
 
+# Define the properties from regionprops we want to extract
+# NOTE: In practice we could expose this as a configuration or UI element
 MEASURED_PROPERTIES = ('label', 'area', 'eccentricity')
 
 
@@ -100,6 +102,8 @@ class ExampleWorkflowWidget(QWidget):
             for path in paths:
                 image = skimage.io.imread(path)
                 # TIFFs here are (Y, X, C); napari expects channels first
+                # NOTE: This is not universally true, just for demo data
+                # In reality, we would use a more sophisticated data loader!
                 image = np.transpose(image, (2, 0, 1))
                 yield {'img': image, 'name': path.name}
 

@@ -27,7 +27,7 @@ The widgets are under **Plugins > CBIAS2026 Demo Plugin** and also in the
   Demo Plugin** (`configurations` in the manifest). The menu command and the
   workflow widget both use them.
 - **Sample data.** **File > Open Sample > CBIAS2026 Demo Plugin** has mitotic
-  nuclei, a `cells3d` max projection laid out for the workflow widget, and
+  nuclei, a `cells3d` middle slice laid out for the workflow widget, and
   synthetic nuclei with ground-truth labels (`_sample_data.py`). The first
   two are downloaded by scikit-image the first time they're opened, so open
   them once beforehand if the session has no internet.

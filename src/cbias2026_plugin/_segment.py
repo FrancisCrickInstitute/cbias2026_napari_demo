@@ -1,11 +1,12 @@
 """
 Segmentation shared by the workflow widget and a one-click menu command.
 
-`segment_image` is a plain command, not a widget: napari runs it straight
+`segment_image` is a plain command, not a widget. Napari runs it straight
 from the Layers menu, injecting arguments based on their type annotations
-and adding whatever it returns to the viewer. A menu command has no GUI for
-parameters, so its parameters come from the plugin's settings, which the
-manifest's `configurations` section adds to napari's Preferences dialog.
+and adding whatever it returns to the viewer.
+Its parameters come from the plugin's settings, which the manifest's
+`configurations` section adds to napari's Preferences dialog that users can
+edit.
 """
 
 from typing import TYPE_CHECKING
@@ -19,7 +20,7 @@ if TYPE_CHECKING:
 
 PLUGIN_NAME = 'cbias2026-plugin'
 
-# keys must match the `threshold_method` enum in napari.yaml
+# NOTE: Keys must match the `threshold_method` enum in napari.yaml
 THRESHOLD_METHODS = {
     'otsu': filters.threshold_otsu,
     'li': filters.threshold_li,
@@ -41,6 +42,7 @@ def segment_channel(
         too_small = areas < min_area
         too_small[0] = False  # background
         labels[too_small[labels]] = 0
+        # Relabel for contiguous labels
         labels, _, _ = segmentation.relabel_sequential(labels)
     return labels
 
@@ -65,4 +67,7 @@ def segment_image(
     # napari injects the currently selected layer. Returning a
     # LayerDataTuple rather than LabelsData lets us name the new layer.
     labels = segment_channel(image.data, **segmentation_settings())
+    # NOTE: We always overwrite previous runs
+    # By injecting the segmentation_settings into the name we
+    # could allow for 1 layer per unique run
     return labels, {'name': f'{image.name}_segmented'}, 'labels'

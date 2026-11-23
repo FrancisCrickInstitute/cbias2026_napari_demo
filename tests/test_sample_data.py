@@ -13,7 +13,7 @@ PLUGIN = 'cbias2026-plugin'
     ('key', 'expected'),
     [
         ('mitotic_nuclei', {'mitotic nuclei': Image}),
-        ('cells3d_projection', {'cells3d max projection': Image}),
+        ('cells3d_slice', {'cells3d middle slice': Image}),
         (
             'synthetic_nuclei',
             {'synthetic nuclei': Image, 'ground truth': Labels},
@@ -49,15 +49,15 @@ def test_synthetic_nuclei_ground_truth_matches_image():
     assert abs(found - truth.max()) <= 0.1 * truth.max()
 
 
-def test_cells3d_projection_runs_through_workflow(make_napari_viewer, qtbot):
+def test_cells3d_slice_runs_through_workflow(make_napari_viewer, qtbot):
     viewer = make_napari_viewer()
-    viewer.open_sample(PLUGIN, 'cells3d_projection')
+    viewer.open_sample(PLUGIN, 'cells3d_slice')
     widget = ExampleWorkflowWidget(viewer)
     widget.channel_idx.setValue(1)  # nuclei
 
     widget.run_analysis()
     qtbot.waitUntil(lambda: len(viewer.layers) == 2, timeout=10_000)
 
-    labels = viewer.layers['cells3d max projection_labels_ch1']
+    labels = viewer.layers['cells3d middle slice_labels_ch1']
     assert labels.data.shape == (256, 256)
     assert labels.data.max() > 5
