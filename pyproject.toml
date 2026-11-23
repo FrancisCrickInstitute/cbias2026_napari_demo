@@ -32,14 +32,22 @@ dependencies = [
     "magicgui",
     "qtpy",
     "scikit-image",
-    "pandas>=3.1.1",
-    "tabulate>=0.10.0",
+    "pandas",
+    # the minimum pandas accepts for DataFrame.to_markdown
+    "tabulate>=0.9",
+    "imagecodecs",
 ]
 
 [project.optional-dependencies]
 # Allow easily installation with the full, default napari installation
 # (including Qt backend) using cbias2026-plugin[all].
-all = ["napari[all]"]
+all = [
+    "napari[all]",
+    # Qt 6.12 hides magicgui's slider value readout (the text box collapses
+    # to 1 px). Remove once https://github.com/pyapp-kit/magicgui/pull/751
+    # is released.
+    "PyQt6<6.12",
+]
 
 [dependency-groups]
 dev = [
@@ -49,6 +57,7 @@ dev = [
     "prek",  # fast drop-in replacement for pre-commit
     "pytest-qt",  # https://pytest-qt.readthedocs.io/en/latest/
     "napari[qt]",  # test with napari's default Qt bindings
+    "PyQt6<6.12",  # see the note on the `all` extra
 ]
 
 [project.entry-points."napari.manifest"]
