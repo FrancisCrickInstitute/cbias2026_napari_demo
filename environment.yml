@@ -1,0 +1,33 @@
+# conda environment for the workshop, as an alternative to pip/uv.
+#
+#   conda env create -f environment.yml
+#   conda activate cbias2026-napari
+#   napari
+#
+# Run from the repository root: the plugin itself is installed from this
+# directory with `pip install -e .`. Everything it depends on is listed
+# below so that conda installs it, and pip only installs the plugin.
+name: cbias2026-napari
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13
+  - napari>=0.10
+  # conda-forge's napari doesn't include a Qt binding. PyQt6 matches what
+  # `pip install "napari[all]"` uses. Qt 6.12 hides magicgui's slider value
+  # readout; remove the pin once https://github.com/pyapp-kit/magicgui/pull/751
+  # is released.
+  - pyqt6<6.12
+  - numpy
+  - magicgui
+  - qtpy
+  - scikit-image
+  # downloads the scikit-image sample data; the conda scikit-image package
+  # doesn't include it
+  - pooch
+  - pandas
+  - tabulate>=0.9
+  - imagecodecs
+  - pip
+  - pip:
+      - -e .

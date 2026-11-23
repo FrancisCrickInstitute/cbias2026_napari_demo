@@ -69,6 +69,13 @@ cbias2026-plugin = "cbias2026_plugin:napari.yaml"
 requires = ["setuptools>=77.0.3", "setuptools_scm"]
 build-backend = "setuptools.build_meta"
 
+[tool.uv]
+# A fixed cutoff, so that uv.lock is valid on every machine and `uv sync`
+# gives everyone the same versions. Without it, uv re-resolves whenever its
+# exclude-newer setting differs from the one the lock was made with. Move
+# the date forward (then run `uv lock`) to pick up newer packages.
+exclude-newer = "2026-11-16T00:00:00Z"
+
 [tool.setuptools]
 include-package-data = true
 

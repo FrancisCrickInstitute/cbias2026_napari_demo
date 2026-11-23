@@ -40,15 +40,84 @@ The manifest that wires all of this into napari is
 
 ## Installation
 
-The plugin needs Python 3.13 or later. Clone this repository, then from
-inside the clone install the plugin together with napari:
+The plugin needs Python 3.13 or later. First clone this repository and move into it:
 
 ```bash
+git clone https://github.com/FrancisCrickInstitute/cbias2026_napari_demo.git
+cd cbias2026_napari_demo
+```
+
+Then install it with one of uv, conda or pip. All the commands below are run
+from inside the clone.
+
+### With uv
+
+[uv] is a fast replacement for `pip` and `venv` that can also install Python
+itself.
+
+1. Install uv by following the
+   [installation guide](https://docs.astral.sh/uv/getting-started/installation/).
+   On macOS and Linux this is:
+
+   ```bash
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   ```
+
+   and on Windows (PowerShell):
+
+   ```powershell
+   powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+   ```
+
+2. Install everything:
+
+   ```bash
+   uv sync
+   ```
+
+   This creates a virtual environment in `.venv` (downloading Python 3.13
+   if you don't already have it) and installs the exact versions listed in
+   `uv.lock`, so everyone gets the same setup. The plugin is installed in
+   editable mode, so changes to the code in `src/` are picked up the next
+   time napari starts. The test tools are installed too.
+
+3. Start napari:
+
+   ```bash
+   uv run napari
+   ```
+
+   `uv run` runs a command inside the project's environment, so there is
+   nothing to activate. If you prefer, activate the environment instead
+   (`source .venv/bin/activate`, or `.venv\Scripts\activate` on Windows)
+   and run `napari` directly.
+
+> **Note:** uv can also be used like pip, with `uv venv` to create the
+> environment and `uv pip install -e ".[all]"` to install into it. That
+> installs the newest allowed versions rather than the ones in `uv.lock`,
+> and the next `uv run` changes the environment to match `uv.lock`, so use
+> one approach or the other.
+
+### With conda
+
+With conda (or mamba):
+
+```bash
+conda env create -f environment.yml
+conda activate cbias2026-napari
+napari
+```
+
+### With pip
+
+```bash
+python -m venv .venv
+source .venv/bin/activate  # on Windows: .venv\Scripts\activate
 pip install -e ".[all]"
 napari
 ```
 
-With [uv], use `uv sync` and then `uv run napari`.
+This uses whichever Python runs `python`, which must be 3.13 or later.
 
 ## Development
 
