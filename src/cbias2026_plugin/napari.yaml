@@ -112,7 +112,7 @@ contributions:
       properties:
         sigma:
           title: Gaussian smoothing sigma (pixels)
-          type: float
+          type: number
           default: 5.0
           minimum: 0.5
           maximum: 50.0
